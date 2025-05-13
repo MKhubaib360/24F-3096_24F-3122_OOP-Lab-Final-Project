@@ -1,6 +1,6 @@
 #pragma once
-#include<iostream>
-#include<string>
+#include <iostream>
+#include <string>
 #include <fstream>
 #include <cmath>
 #include <windows.h>
@@ -8,6 +8,17 @@
 #include <ctime>
 
 using namespace std;
+
+class Population;
+class Army;
+class Economy;
+class Resources;
+class Leadership;
+class Peasant;
+class Merchant;
+class Noble;
+class KingdomEvent;
+class MapGrid;
 
 class SocialClass {
 	protected:
@@ -208,10 +219,166 @@ public:
 
 class GameState {
 private:
-	const string SAVE_FILE = "stronghold_save.txt";
+	static const string SINGLEPLAYER_SAVE;
+	static const string MULTIPLAYER_SAVE;
+
+	static bool fileExists(const string& filename) {
+		ifstream f(filename);
+		return f.good();
+	}
 
 public:
-	void saveGame(const Economy& econ, const Army& army, const Population& pop, const Resources& res, const Leadership& lead, const Peasant& p, const Merchant& m, const Noble& n, const KingdomEvent& events);
 
-	bool loadGame(Economy& econ, Army& army, Population& pop, Resources& res, Leadership& lead, Peasant& p, Merchant& m, Noble& n, KingdomEvent& events);
+	static void saveGame(const Economy& econ, const Army& army,
+		const Population& pop, const Resources& res,
+		const Leadership& lead, const Peasant& p,
+		const Merchant& m, const Noble& n,
+		const KingdomEvent& events);
+
+	static bool loadGame(Economy& econ, Army& army, Population& pop,
+		Resources& res, Leadership& lead, Peasant& p,
+		Merchant& m, Noble& n, KingdomEvent& events);
+
+	static bool loadGame(bool& isMultiplayer, Economy& econ, Army& army,
+		Population& pop, Resources& res, Leadership& lead,
+		Peasant& p, Merchant& m, Noble& n, KingdomEvent& events);
+
+	static void saveGameMultiplayer();
 };
+
+class NetworkHandler {
+private:
+	static const string CHAT_FILE;    
+	static string messages[4]; 
+public:
+	static void sendMessage(int senderID, int receiverID, const string& msg);
+	static string getMessages(int playerID);
+	static void showChatHistory(int playerID);
+	static void clearSession();
+};
+
+class AllianceManager {
+private:
+	static const string ALLIANCE_FILE;
+
+public:
+
+	enum TreatyType { NON_AGGRESSION, DEFENSE_PACT, FULL_ALLIANCE };
+
+	static void proposeTreaty(int proposerID, int targetID, TreatyType type);
+	static void breakTreaty(int breakerID, int targetID);
+	static void displayAlliances(int playerID);
+	static bool hasTreaty(int player1, int player2);
+};
+
+class TradeSystem {
+private:
+	static const string TRADE_FILE;
+
+public:
+	enum ResourceType { FOOD, WOOD, STONE, IRON, GOLD };
+
+	static void proposeTrade(int senderID, int receiverID,
+		ResourceType offerType, int offerQty,
+		ResourceType requestType, int requestQty);
+
+	static void displayTradeHistory(int playerID);
+	static bool acceptTrade(int tradeID); 
+};
+
+class ConflictResolver {
+private:
+	static const string BATTLE_LOG_FILE;
+
+public:
+	enum Outcome { ATTACKER_WINS, DEFENDER_WINS, STALEMATE };
+
+	static Outcome resolveBattle(Army& attackerArmy, Army& defenderArmy,
+		const Leadership& attackerLead,
+		const Leadership& defenderLead);
+
+	static void displayBattleHistory(int playerID);
+	static void applyBattleEffects(Outcome result, Army& winner,
+		Army& loser, Economy& economy);
+};
+
+
+class MapGrid {
+private:
+	static const int GRID_SIZE = 10;
+	char grid[GRID_SIZE][GRID_SIZE];
+	int controllers[GRID_SIZE][GRID_SIZE]; 
+
+	void applyTerrainBonus(int x, int y, Resources& res);
+
+public:
+	MapGrid();
+
+	void initializeMap();
+	void displayMap() const;
+	bool moveArmy(int playerID, int oldX, int oldY, int newX, int newY);
+	void updateControl(int playerID, int x, int y, const Army& army);
+	void processTerrainBonuses(Resources& res, int playerID);
+
+	void saveMap(const string& filename) const;
+	void loadMap(const string& filename);
+};
+
+class MultiplayerState {
+public:
+	static const int MAX_PLAYERS;
+	static const string STATE_FILE;
+	static MapGrid gameMap;
+	static int currentTurn;
+
+	struct PlayerData {
+		KingdomEvent events;
+		Economy economy;
+		Army army;
+		Population population;
+		Resources resources;
+		Leadership leadership;
+		Peasant peasants;
+		Merchant merchants;
+		Bank bank;
+		Noble nobles;
+		int mapX, mapY;
+
+		PlayerData(int startPop);
+	};
+
+	static PlayerData players[4];
+
+public:
+	static void initializeGame();
+	static void saveGame();
+	static bool loadGame();
+	static void processTurn();
+	static void showPlayerStatus(int playerID);
+};
+
+
+
+inline void processMonth(Population& pop, Army& army, Economy& econ,
+	Resources& res, Leadership& lead,
+	Peasant& p, Merchant& m, Noble& n,
+	KingdomEvent& events) {
+	system("cls");
+	cout << "--- PROCESSING MONTH ---" << endl;
+
+	pop.updatePopulation(res);
+	p.updatePeasant();
+	m.updateMerchant();
+	n.updateNoble();
+	econ.collectTaxes(pop, p, m);
+	econ.payArmy(army);
+	econ.applyInflation();
+	army.updateMorale(lead.getStability());	res.spoilFood(); 
+
+	cout <<endl<< "--- MONTHLY REPORT ---" << endl;
+	pop.displayPopulation();
+	army.displayArmy();
+	econ.displayEconomy();
+	res.displayResources();
+	lead.displayLeadership();
+}

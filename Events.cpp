@@ -25,11 +25,11 @@ void KingdomEvent::executeEvent(EventType type, Population& pop,
     Army& army, Economy& econ, Resources& res,
     Peasant& peasants, Merchant& merchants, Noble& nobles) {
     system("cls");
-    cout << "\n---EMERGENCY EVENT ALERT---\n\n";
+    cout<<endl << "===EMERGENCY EVENT ALERT===\n"<<endl;
     applyEffects(type, pop, army, econ, res, peasants, merchants, nobles);
     lastTrigger = time(nullptr);
 
-    cout << "\nPress Enter to continue...";
+    cout << endl<<"Press Enter to continue...";
     cin.ignore();
     cin.get();
 }
@@ -39,14 +39,14 @@ void KingdomEvent::applyEffects(EventType type, Population& pop,
     Peasant& peasants, Merchant& merchants, Noble& nobles) {
     switch (type) {
     case EventType::FAMINE:
-        cout << "Famine Alert!\n";
-        cout << "Storages halved!\n";
+        cout << "Famine Alert!"<<endl;
+        cout << "Storages halved!"<<endl;
         res.gatherFood(-res.getFood() / 2);
         peasants.setHappiness(peasants.getHappiness() - 20);
         break;
 
     case EventType::PLAGUE: {
-        cout << "Plague OUTBREAK!\n";
+        cout << "Plague OUTBREAK!"<<endl;
         int casualties = pop.getTotal() / 5;
         pop.setTotal(max(0, pop.getTotal() - casualties));
         pop.setDeaths(casualties);
@@ -55,14 +55,14 @@ void KingdomEvent::applyEffects(EventType type, Population& pop,
     }
 
     case EventType::FLOOD:
-        cout << "A Massive Flood Arrived!!\n";
+        cout << "A Massive Flood Arrived!"<<endl;
         res.gatherWood(-res.getWood() / 2);
         res.gatherFood(-res.getFood() / 3);
         merchants.setHappiness(merchants.getHappiness() - 15);
         break;
 
     case EventType::TORNADO:
-        cout << "Kingdom is hit by a Huge Tornado!\n";
+        cout << "Kingdom is hit by a Huge Tornado!"<<endl;
         res.gatherWood(-res.getWood() / 2);
         res.gatherStone(-res.getStone() / 3);
         army.recruitt(-army.getRecruits() / 4);
@@ -70,21 +70,21 @@ void KingdomEvent::applyEffects(EventType type, Population& pop,
         break;
 
     case EventType::ECONOMIC_CRISIS:
-        cout << "Economic Collapse!\n";
+        cout << "Economic Collapse!"<<endl;
         econ.adjustTaxRate(min(econ.getTaxRate() + 0.15f, 0.5f));
         econ.adjustTreasury(-static_cast<int>(econ.getTreasury() / 3));
         merchants.setHappiness(merchants.getHappiness() - 25);
         break;
 
     case EventType::CORRUPTION:
-        cout << "Corrupton Scandal!\n";
+        cout << "Corrupton Scandal!"<<endl;
         army.setCorruption(min(army.getCorruption() + 25, 100));
         econ.adjustTreasury(-1000);
         nobles.setHappiness(nobles.getHappiness() - 15);
         break;
 
     case EventType::REVOLT: {
-        cout << "PEASANTS REVOLT!\n";
+        cout << "PEASANTS REVOLT!"<<endl;
         int rebels = peasants.getPopulation() / 3;
         peasants.setPopulation(max(0, peasants.getPopulation() - rebels));
         army.recruitt(-army.getRecruits() / 2);

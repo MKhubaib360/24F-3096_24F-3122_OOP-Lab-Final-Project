@@ -18,8 +18,8 @@ int SocialClass::getPopulation() const {
 void SocialClass::display() const
 {
 	cout << "Type: " << socialName;
-	cout << "\nPopulation: " << population ;
-	cout << "\nHappiness: " << happiness << "%" << endl;
+	cout << endl<<"Population: " << population ;
+	cout <<endl<< "Happiness: " << happiness << "%" << endl;
 }
 
 Peasant::Peasant(int pop) : SocialClass("Peasant", pop){}
