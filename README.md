@@ -59,4 +59,5 @@ Notes:
 
 Author:
 -------
-Developed by [Your Name Here]
+Developed by khubaibkhan1925@gmail.com
+
