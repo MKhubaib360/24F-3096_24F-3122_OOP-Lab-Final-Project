@@ -8,8 +8,8 @@ string NetworkHandler::messages[4] = {};
 
 void NetworkHandler::sendMessage(int senderID, int receiverID, const string& msg) {
     if (receiverID >= 0 && receiverID < 4) {
-        string formattedMsg = "[Player" + to_string(senderID + 1) + "->Player" +
-            to_string(receiverID + 1) + "]: " + msg;
+        string formattedMsg = "[Player" + to_string(senderID + 1) + " -> Player" +
+            to_string(receiverID + 1) + "] : " + msg;
 
         messages[receiverID] += formattedMsg + "\n";
 
@@ -32,7 +32,7 @@ void NetworkHandler::showChatHistory(int playerID) {
     cout <<endl<< "=== Chat History for Player" << playerID + 1 << "===" << endl;
 
     while (getline(file, line)) {
-        size_t arrowPos = line.find("->Player" + to_string(playerID + 1) + "]:");
+        size_t arrowPos = line.find(" -> Player" + to_string(playerID + 1) + "] :");
         if (arrowPos != string::npos) {
             cout << line << endl;
         }

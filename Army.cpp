@@ -45,7 +45,7 @@ void Army::autoFeed(Resources& res) {
 }
 
 void Army::manualFeed(Resources& res) {
-	cout << endl << "Army feeding:-" << endl;
+	cout << endl << "=== Army feeding ===" << endl;
 	cout << "Available food: " << res.getFood() << endl;
 	cout << "Total soldiers: " << (trained_soldiers + recruit) << endl;
 	cout << "Enter food amount to use: " << endl;

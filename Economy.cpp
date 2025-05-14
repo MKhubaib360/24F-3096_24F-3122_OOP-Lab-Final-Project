@@ -38,7 +38,7 @@ void Economy::applyInflation() {
 }
 
 void Economy::displayEconomy() const {
-    cout <<endl<< "===Economy Status===" << endl;
+    cout <<endl<< "=== Economy Status ===" << endl;
     cout << "Treasury: " << treasury << " gold" << endl;
     cout << "Tax Rate: " << (tax_rate * 100) << "%" << endl;
     cout << "Inflation: " << (inflation * 100) << "%\n" << endl;

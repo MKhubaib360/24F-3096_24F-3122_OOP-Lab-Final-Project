@@ -16,7 +16,6 @@ bool Resources::consumeFood(int amount) {
 
 void Resources::gatherFood(int amount) {
     food += amount;
-    if (food > 1000) food = 1000;   
 }
 
 bool Resources::consumeWood(int amount) {
@@ -30,12 +29,10 @@ bool Resources::consumeWood(int amount) {
 
 void Resources::gatherStone(int amount) {
     stone += amount;
-    if(stone > 300) stone = 300;
 }
 
 void Resources::gatherIron(int amount) {
     iron += amount;
-    if(iron > 200) iron = 200; 
 }
 
 bool Resources::consumeStone(int amount) {
@@ -56,7 +53,6 @@ bool Resources::consumeIron(int amount) {
 
 void Resources::gatherWood(int amount) {
     wood += amount;
-    if (wood > 500) wood = 500; 
 }
 
 void Resources::spoilFood() {
@@ -66,7 +62,7 @@ void Resources::spoilFood() {
 
 
 void Resources::displayResources() const {
-    cout << endl<<"     Resources" << endl;
+    cout << endl<<"=== Resources ===" << endl;
     cout << "Food: " << food << " units"<<endl;
     cout << "Wood: " << wood << " logs"<<endl;
     cout << "Stone: " << stone << " blocks"<<endl;

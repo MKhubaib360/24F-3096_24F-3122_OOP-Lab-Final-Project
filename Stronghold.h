@@ -179,7 +179,7 @@ class Leadership {
 
 		void setStability(bool s) { isStable = s; }
 		bool getStability() const;
-	};
+};
 
 class Bank {
 	private:
@@ -192,7 +192,7 @@ class Bank {
 		void repayLoan(Economy& economy, float amount);
 		void conductAudit(Economy& economy);
 		void displayBank() const;
-	};
+};
 
 enum class EventType { NONE, FAMINE, PLAGUE, FLOOD, TORNADO,ECONOMIC_CRISIS, CORRUPTION, REVOLT };
 
@@ -204,6 +204,7 @@ private:
 
 public:
 	KingdomEvent(int minutes);
+
 	time_t getLastTrigger() const { return lastTrigger; }
 	int getIntervalMinutes() const { return intervalMinutes; }
 	EventType getLastEvent() const { return lastEvent; }
@@ -364,7 +365,7 @@ inline void processMonth(Population& pop, Army& army, Economy& econ,
 	Peasant& p, Merchant& m, Noble& n,
 	KingdomEvent& events) {
 	system("cls");
-	cout << "--- PROCESSING MONTH ---" << endl;
+	cout << "=== PROCESSING MONTH ===" << endl;
 
 	pop.updatePopulation(res);
 	p.updatePeasant();
@@ -375,7 +376,7 @@ inline void processMonth(Population& pop, Army& army, Economy& econ,
 	econ.applyInflation();
 	army.updateMorale(lead.getStability());	res.spoilFood(); 
 
-	cout <<endl<< "--- MONTHLY REPORT ---" << endl;
+	cout <<endl<< "=== MONTHLY REPORT ===" << endl;
 	pop.displayPopulation();
 	army.displayArmy();
 	econ.displayEconomy();

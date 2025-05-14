@@ -3,16 +3,21 @@ using namespace std;
 
 int dummy;
 
+void color(int textcolor, int backgroundcolor) {
+    HANDLE hconsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hconsole, (backgroundcolor << 4) | textcolor);
+}
+
 void displayMainMenu() {
-    cout << "\n---StrongHold Kingdom Management---" << endl;
-    cout << "1. View Kingdom Status\n";
-    cout << "2. Manage Army\n";
-    cout << "3. Manage Population & Resources\n";
-    cout << "4. Adjust Taxes\n";
-    cout << "5. Bank Operations\n";
-    cout << "6. Process Next Month\n";
-    cout << "7. Save/Load Game\n";
-    cout << "8. Exit\n";
+    cout << endl<<"=== StrongHold Kingdom Management ===" << endl;
+    cout << "[1] View Kingdom Status" << endl;
+    cout << "[2] Manage Army" << endl;
+    cout << "[3] Manage Population & Resources" << endl;
+    cout << "[4] Adjust Taxes" << endl;
+    cout << "[5] Manage Bank" << endl;
+    cout << "[6] Process Next Month" << endl;
+    cout << "[7] Save/Load Game" << endl;
+    cout << "[8] Exit" << endl;
     cout << "Choice: ";
 }
 
@@ -47,14 +52,15 @@ void initializeGame(Peasant& peasants, Merchant& merchants, Noble& nobles,
     leadership = Leadership(rulerName);
     bank = Bank();
 
-    cout << "Game initialized with the following resources:-\n\n";
-    cout << "Peasants: " << INITIAL_PEASANTS << "\nMerchants: " << INITIAL_MERCHANTS
-        << "\nNobles: " << INITIAL_NOBLES << "\nTotal Population: " << INITIAL_POPULATION << "\n";
+    cout << "Game initialized with the following resources:-" << endl << endl;
+    cout << "Peasants: " << INITIAL_PEASANTS << endl << "Merchants: " << INITIAL_MERCHANTS
+        << endl << "Nobles: " << INITIAL_NOBLES << endl << "Total Population: " << INITIAL_POPULATION << endl ;
     cout << "Army Recruits: " << INITIAL_ARMY_RECRUITS << "\nTreasury: " << INITIAL_TREASURY << "\n";
-    cout << "Resources:- \n Food: " << INITIAL_FOOD << ", Wood: " << INITIAL_WOOD
-        << ", Stone: " << INITIAL_STONE << ", Iron: " << INITIAL_IRON << "\n\n";
+    cout << "Resources:-" <<endl<<" Food: " << INITIAL_FOOD << ", Wood: " << INITIAL_WOOD
+        << ", Stone: " << INITIAL_STONE << ", Iron: " << INITIAL_IRON << endl << endl;
     cout << "Press Enter to continue...";
     cin.ignore();
+	cin.get();
     system("cls");
 }
 
@@ -62,11 +68,11 @@ void populationManagementMenu(Population& pop, Resources& res) {
     int choice;
 
     do {
-        cout << "\n---Populaton management---" << endl;
-        cout << "1. Build Housing (50 wood, 30 stone)" << endl;
-        cout << "2. Gather Resources" << endl;
-        cout << "3. View Population Status" << endl;
-        cout << "0. Back" << endl;
+        cout << "\n=== Populaton management ===" << endl;
+        cout << "[1] Build Housing (50 wood, 30 stone)" << endl;
+        cout << "[2] Gather Resources" << endl;
+        cout << "[3] View Population Status" << endl;
+        cout << "[0] Back" << endl;
         cout << "Choice: ";
         cin >> choice;
         system("cls");
@@ -75,7 +81,7 @@ void populationManagementMenu(Population& pop, Resources& res) {
         case 1: {
             if (res.consumeWood(50) && res.consumeStone(30)) {
                 pop.setShelter(pop.getShelter() + 100);
-                cout << "Built shelter for 100 more people!\n";
+                cout << "Built shelter for 100 people!\n";
             }
             else {
                 cout << "Need 50 wood and 30 stone!\n";
@@ -111,13 +117,13 @@ void populationManagementMenu(Population& pop, Resources& res) {
 void armyManagementMenu(Army& army, Resources& res) {
     int choice;
     do {
-        cout << "\n---Army Management Menu---" << endl;
-        cout << "1. Recruit Soldiers\n";
-        cout << "2. Train Soldiers\n";
-        cout << "3. Feed Army\n";
-        cout << "4. Pay Soldiers\n";
-        cout << "5. View Army Status\n";
-        cout << "0. Back\n";
+        cout << "\n=== Army Management Menu ===" << endl;
+        cout << "[1] Recruit Soldiers" << endl;
+        cout << "[2] Train Soldiers" << endl;
+        cout << "[3] Feed Army" << endl;
+        cout << "[4] Pay Soldiers" << endl;
+        cout << "[5] View Army Status" << endl;
+        cout << "[0] Back" << endl;
         cout << "Choice: ";
         cin >> choice;
         system("cls");
@@ -142,7 +148,7 @@ void armyManagementMenu(Army& army, Resources& res) {
             break;
         case 4: {
             int gold;
-            cout << "Enter payment amount: ";
+            cout << "Enter amount: ";
             cin >> gold;
             army.pay(gold);
             break;
@@ -158,12 +164,12 @@ void armyManagementMenu(Army& army, Resources& res) {
 void bankOperationsMenu(Bank& bank, Economy& econ) {
     int choice;
     do {
-        cout << "\n---Bank---" << endl;
-        cout << "1. Take Loan\n";
-        cout << "2. Repay Loan\n";
-        cout << "3. Conduct Audit\n";
-        cout << "4. Display Bank Status\n";
-        cout << "0. Back\n";
+        cout << endl<<"=== Bank ===" << endl;
+        cout << "[1] Take Loan" << endl;
+        cout << "[2] Repay Loan" << endl;
+        cout << "[3] Conduct Audit" << endl;
+        cout << "[4] Display Bank Status" << endl;
+        cout << "[0] Back" << endl;
         cout << "Choice: ";
         cin >> choice;
         system("cls");
@@ -198,9 +204,10 @@ void multiplayerGame() {
     bool multiplayerRunning = true;
 
     while (multiplayerRunning) {
+
         int currentPlayer = MultiplayerState::currentTurn;
         auto& player = MultiplayerState::players[currentPlayer];
-
+        MultiplayerState::gameMap.processTerrainBonuses(player.resources, currentPlayer);
         bool turnActive = true;
         while (turnActive) {
             system("cls");
@@ -210,72 +217,79 @@ void multiplayerGame() {
             AllianceManager::displayAlliances(currentPlayer);
 
             cout << "\n=== KINGDOM MANAGEMENT ===" << endl;
-            cout << "1. Kingdom Operations\n";
-            cout << "2. Diplomacy & Alliances\n";
-            cout << "3. Trade with Others\n";
-            cout << "4. Military Actions\n";
-            cout << "5. View Chat\n";
-            cout << "6. End Turn\n";
-            cout << "7. Save & Exit\n";
+            cout << "[1] Kingdom Operations\n";
+            cout << "[2] Diplomacy & Alliances\n";
+            cout << "[3] Trade with Others\n";
+            cout << "[4] Military Actions\n";
+            cout << "[5] View Chat\n";
+            cout << "[6] End Turn\n";
+            cout << "[7] Save & Exit\n";
             cout << "Choice: ";
 
             int mainChoice;
             cin >> mainChoice;
-
             switch (mainChoice) {
             case 1: { 
                 bool inKingdomMenu = true;
                 while (inKingdomMenu) {
                     system("cls");
                     cout << "\n=== KINGDOM OPERATIONS ===" << endl;
-                    cout << "1. View Kingdom Status\n";
-                    cout << "2. Manage Army\n";
-                    cout << "3. Manage Population & Resources\n";
-                    cout << "4. Adjust Taxes\n";
-                    cout << "5. Bank Operations\n";
-                    cout << "6. Process Next Month\n";
-                    cout << "7. Return to Main Menu\n";
+                    cout << "[1] View Kingdom Status" << endl;
+                    cout << "[2] Manage Army" << endl;
+                    cout << "[3] Manage Population & Resources" << endl;
+                    cout << "[4] Adjust Taxes" << endl;
+                    cout << "[5] Manage Bank " << endl;
+                    cout << "[6] Process Next Month" << endl;
+                    cout << "[7] Return to Main Menu" << endl;
                     cout << "Choice: ";
 
                     int kingdomChoice;
                     cin >> kingdomChoice;
-
                     switch (kingdomChoice) {
                     case 1: {
-                        cout << "\n--- Kingdom Status ---\n";
+                        cout << endl<<"=== Kingdom Status ===\n";
                         player.population.displayPopulation();
                         player.army.displayArmy();
                         player.economy.displayEconomy();
                         player.resources.displayResources();
                         player.leadership.displayLeadership();
-                        cout << "\nPress Enter to continue...";
+                        cout << endl << "Press Enter to continue...";
                         cin.ignore();
                         cin.get();
+						system("cls");  
                         break;
                     }
                     case 2:
                         armyManagementMenu(player.army, player.resources);
+                        system("cls");
                         break;
                     case 3:
                         populationManagementMenu(player.population, player.resources);
+                        system("cls");
                         break;
                     case 4: {
                         float newRate;
                         cout << "Enter new tax rate (0-0.5): ";
                         cin >> newRate;
                         player.economy.adjustTaxRate(newRate);
-                        cout << "Tax rate updated!\n";
+                        cout << "Tax rate updated!" << endl;
                         Sleep(1000);
+                        system("cls");
                         break;
                     }
                     case 5:
                         bankOperationsMenu(player.bank, player.economy);
+                        system("cls");
                         break;
                     case 6:
                         processMonth(player.population, player.army, player.economy,
                             player.resources, player.leadership,
                             player.peasants, player.merchants,
                             player.nobles, player.events);
+						cout << endl << "Press Enter to continue...";
+						cin.ignore();
+						cin.get();
+                        system("cls");
                         break;
                     case 7:
                         inKingdomMenu = false;
@@ -289,11 +303,11 @@ void multiplayerGame() {
             }
             case 2: { 
                 system("cls");
-                cout << "\n=== DIPLOMACY ===" << endl;
-                cout << "1. Propose Treaty\n";
-                cout << "2. Break Treaty\n";
-                cout << "3. View Alliances\n";
-                cout << "4. Back\n";
+                cout << endl << "=== DIPLOMACY ===" << endl;
+                cout << "[1] Propose Treaty" << endl;
+                cout << "[2] Break Treaty" << endl;
+                cout << "[3] View Alliances" << endl;
+                cout << "[4] Back" << endl;
                 cout << "Choice: ";
 
                 int allianceChoice;
@@ -303,7 +317,10 @@ void multiplayerGame() {
                     int targetPlayer;
                     cout << "Target Player (1-4): ";
                     cin >> targetPlayer;
-                    cout << "Treaty Type (1-3):\n1. Non-Aggression\n2. Defense Pact\n3. Full Alliance\n";
+                    cout << "Treaty Type (1-3):" << endl;
+                    cout << " [1] Non-Aggression" << endl;
+                    cout << " [2] Defense Pact" << endl;
+                    cout << " [3] Full Alliance"<<endl;
                     int type;
                     cin >> type;
                     AllianceManager::proposeTreaty(currentPlayer, targetPlayer - 1,
@@ -328,11 +345,11 @@ void multiplayerGame() {
             }
             case 3: { 
                 system("cls");
-                cout << "\n=== TRADE ===" << endl;
-                cout << "1. Propose Trade\n";
-                cout << "2. View Trade Offers\n";
-                cout << "3. Accept Trade\n";
-                cout << "4. Back\n";
+                cout << endl << "=== TRADE ===" << endl;
+                cout << "[1] Propose Trade" << endl;
+                cout << "[2] View Trade Offers" << endl;
+                cout << "[3] Accept Trade" << endl;
+                cout << "[4] Back" << endl;
                 cout << "Choice: ";
 
                 int tradeChoice;
@@ -343,12 +360,12 @@ void multiplayerGame() {
                     cout << "Target Player: ";
                     cin >> targetPlayer;
 
-                    cout << "Offer (1-5):\n1.Food 2.Wood 3.Stone 4.Iron 5.Gold\n";
+                    cout << "Offer (1-5):"<<endl<<"1.Food 2.Wood 3.Stone 4.Iron 5.Gold" << endl;
                     int offerType, offerQty;
                     cout << "Type: "; cin >> offerType;
                     cout << "Quantity: "; cin >> offerQty;
 
-                    cout << "Request (1-5):\n1.Food 2.Wood 3.Stone 4.Iron 5.Gold\n";
+                    cout << "Request (1-5):"<<endl<<"1.Food 2.Wood 3.Stone 4.Iron 5.Gold" << endl;
                     int requestType, requestQty;
                     cout << "Type: "; cin >> requestType;
                     cout << "Quantity: "; cin >> requestQty;
@@ -377,11 +394,11 @@ void multiplayerGame() {
             }
             case 4: { 
                 system("cls");
-                cout << "\n=== MILITARY COMMANDS ===" << endl;
-                cout << "1. Move Army\n";
-                cout << "2. Attack Player\n";
-                cout << "3. View Battle History\n";
-                cout << "4. Back\n";
+                cout << endl << "=== MILITARY COMMANDS ===" << endl;
+                cout << "[1] Move Army" << endl;
+                cout << "[2] Attack Player" << endl;
+                cout << "[3] View Battle History" << endl;
+                cout << "[4] Back\n";
                 cout << "Choice: ";
 
                 int militaryChoice;
@@ -423,10 +440,10 @@ void multiplayerGame() {
             }
             case 5: { 
                 system("cls");
-                cout << "\n=== COMMUNICATIONS ===" << endl;
-                cout << "1. Send Message\n";
-                cout << "2. Read Messages\n";
-                cout << "3. Back\n";
+                cout << endl << "=== COMMUNICATIONS ===" << endl;
+                cout << "[1] Send Message" << endl;
+                cout << "[2] Read Messages" << endl;
+                cout << "[3] Back" << endl;
                 cout << "Choice: ";
 
                 int chatChoice;
@@ -463,6 +480,7 @@ void multiplayerGame() {
                 break;
             }
         }
+        MultiplayerState::gameMap.processTerrainBonuses(player.resources, currentPlayer);
     }
 }
 
@@ -500,14 +518,14 @@ void handleLoadGame() {
                 system("cls");
                 switch (choice) {
                 case 1: {  
-                    cout << "\n---Kingdom Status---\n";
+                    cout << endl << "=== Kingdom Status ===" << endl;
                     pop.displayPopulation();
                     army.displayArmy();
                     econ.displayEconomy();
                     res.displayResources();
                     lead.displayLeadership();
                     int tmp;
-                    cout << "\nEnter any integer to exit: ";
+                    cout << endl<<"Enter any integer to exit: ";
                     cin >> tmp;
                 } break;
                 case 2:
@@ -534,7 +552,8 @@ void handleLoadGame() {
                     break;
                 case 7: { 
                     int sc;
-                    cout << "1. Save 2. Load: ";
+                    cout << " [1] Save"<<endl<<" [2] Load ";
+                    cout << endl << "Enter your choice : ";
                     cin >> sc;
                     if (sc == 1) {
                         GameState::saveGame(econ, army, pop, res, lead, p, m, n, ev);
@@ -563,27 +582,21 @@ void handleLoadGame() {
 
 
 int main() {
-    system("cls");
-    cout << endl << endl << endl << endl;
-    cout << string(140, '*') << endl;
-    cout << "***   Welcome to StrongHold   ***" << endl;
-    cout << string(140, '*') << endl;
-
+    color(5, 15);
     bool programRunning = true;
     while (programRunning) {
-
         system("cls");
-        cout << "\n=== STRONGHOLD KINGDOM ===\n";
-        cout << "1. New Single Player Game\n";
-        cout << "2. New Multiplayer Game\n";
-        cout << "3. Load Game\n";
-        cout << "4. Exit\n";
+        cout << endl<<"=== STRONGHOLD KINGDOM ==="<<endl;
+        cout << "[1] New Single Player Game" << endl;
+        cout << "[2] New Multiplayer Game" << endl;
+        cout << "[3] Load Game" << endl;
+        cout << "[4] Exit" << endl;
         cout << "Choice: ";
         int mainChoice;
         cin >> mainChoice;
         cin.ignore();  
-
         switch (mainChoice) {
+           
         case 1: {
 
             Peasant p(0);
@@ -610,17 +623,17 @@ int main() {
                 int choice; cin >> choice;
                 system("cls");
                 switch (choice) {
-
+                
                 case 1: {
-                    cout << "\n---Kingdom Status---\n";
+                    cout << "\n=== Kingdom Status ===\n";
                     pop.displayPopulation();
                     army.displayArmy();
                     econ.displayEconomy();
                     res.displayResources();
                     lead.displayLeadership();
-                    int tmp;
-                    cout << "\nEnter any integer to exit: ";
-                    cin >> tmp;
+                    cout << "\nEnter any integer to exit... ";
+                    cin >> dummy;
+					system("cls");
                 } break;
                 case 2:
                     armyManagementMenu(army, res);
@@ -628,6 +641,7 @@ int main() {
                     break;
                 case 3:
                     populationManagementMenu(pop, res);
+					system("cls");
                     break;
                 case 4: {
                     float newRate;
@@ -640,13 +654,17 @@ int main() {
                 } break;
                 case 5:
                     bankOperationsMenu(bank, econ);
+					system("cls");
                     break;
                 case 6:
                     processMonth(pop, army, econ, res, lead, p, m, n, ev);
+                    cout << endl << "Enter any integar to exit...";
+					cin >> dummy;
+                    system("cls");
                     break;
                 case 7: {
                     int sc;
-                    cout << "1. Save 2. Load: ";
+                    cout << "[1] Save "<<endl<<"[2] Load: ";
                     cin >> sc;
                     if (sc == 1) {
                         GameState::saveGame(econ, army, pop, res, lead, p, m, n, ev);
@@ -655,21 +673,24 @@ int main() {
                     else {
                         handleLoadGame();
                     }
+					system("cls");  
                 } break;
                 case 8:
                     gameRunning = false;
+					system("cls");
                     break;
                 default:
                     cout << "Invalid choice!" << endl;
+					system("cls");
                     Sleep(1000);
                 }
             }
         } break;
         case 2:
-            multiplayerGame();  
+            multiplayerGame(); 
             break;
         case 3:
-            handleLoadGame();  
+            handleLoadGame();
             break;
         case 4:
             programRunning = false; 
@@ -680,6 +701,6 @@ int main() {
         }
     }
 
-    cout << "\nThanks for playing Stronghold" << endl;
+    cout << endl<<"                            === Thanks for playing Stronghold ===" << endl;
     return 0;
 }

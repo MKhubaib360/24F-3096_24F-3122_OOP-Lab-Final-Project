@@ -34,7 +34,7 @@ void Bank::conductAudit(Economy& economy) {
 }
 
 void Bank::displayBank() const {
-    cout << endl << "===Bank System===" << endl;
+    cout << endl << "=== Bank System ===" << endl;
     cout << "Active Loan: " << loanDebt << " gold" << endl;
     cout << "Interest Rate: " << (interestRate * 100) << "%" << endl;
     cout << "Corruption Level: " << corruptionLevel << "%" << endl;

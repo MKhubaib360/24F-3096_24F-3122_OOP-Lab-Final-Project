@@ -41,6 +41,6 @@ bool Population::isStable()
 
 void Population::displayPopulation() const
 {
-	cout <<      "Total Population " << total << endl;
+	cout <<"=== Total Population ===" << total << endl;
 	cout << "Births: " << births << ", Ill: " << ill << ", Deaths: " << deaths << endl;
 }

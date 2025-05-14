@@ -25,7 +25,7 @@ void KingdomEvent::executeEvent(EventType type, Population& pop,
     Army& army, Economy& econ, Resources& res,
     Peasant& peasants, Merchant& merchants, Noble& nobles) {
     system("cls");
-    cout<<endl << "===EMERGENCY EVENT ALERT===\n"<<endl;
+    cout<<endl << "=== EMERGENCY EVENT ALERT ===\n"<<endl;
     applyEffects(type, pop, army, econ, res, peasants, merchants, nobles);
     lastTrigger = time(nullptr);
 
@@ -43,7 +43,7 @@ void KingdomEvent::applyEffects(EventType type, Population& pop,
         cout << "Storages halved!"<<endl;
         res.gatherFood(-res.getFood() / 2);
         peasants.setHappiness(peasants.getHappiness() - 20);
-        break;
+        break; 
 
     case EventType::PLAGUE: {
         cout << "Plague OUTBREAK!"<<endl;

@@ -7,7 +7,7 @@ MapGrid::MapGrid() {
 }
 
 void MapGrid::initializeMap() {
-    const char terrain[] = { 'F', 'M', 'P', 'R' }; 
+    const char terrain[] = { 'F', 'M', 'P', 'R' };
 
     for (int i = 0; i < GRID_SIZE; i++) {
         for (int j = 0; j < GRID_SIZE; j++) {
@@ -16,8 +16,10 @@ void MapGrid::initializeMap() {
         }
     }
 
-    grid[0][0] = 'P'; controllers[0][0] = 0; 
-    grid[9][9] = 'P'; controllers[9][9] = 1; 
+    grid[0][0] = 'P'; controllers[0][0] = 0;  
+    grid[9][9] = 'P'; controllers[9][9] = 1;  
+    grid[0][9] = 'P'; controllers[0][9] = 2;  
+    grid[9][0] = 'P'; controllers[9][0] = 3;  
 }
 
 void MapGrid::displayMap() const {
